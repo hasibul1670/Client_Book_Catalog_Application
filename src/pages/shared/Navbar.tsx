@@ -31,7 +31,7 @@ const NavBar = () => {
       </li>
       <li className="nav-link nav-link-ltr">
         <Link to="/courses" className="hover:text-white hover:bg-transparent">
-          Our Courses
+          Books
         </Link>
       </li>
       <li className="nav-link nav-link-ltr">
@@ -39,7 +39,7 @@ const NavBar = () => {
           to="/instructors"
           className="hover:text-white hover:bg-transparent"
         >
-          Our Instructors
+          CheckOut
         </Link>
       </li>
 
@@ -52,7 +52,7 @@ const NavBar = () => {
   );
 
   return (
-    <div className="navbar fixed  z-10 bg-opacity-50 max-w-screen-2xl  bg-black	 ">
+    <div className="navbar fixed  z-10  max-w-screen-2xl bg-gray-600	 ">
       <div className="navbar-start">
         <div className="dropdown ">
           {!isDropdownOpen ? (
@@ -110,7 +110,7 @@ const NavBar = () => {
         </div>
 
         <Link to="/" className="btn btn-ghost normal-case text-white text-xl">
-          Sunlight{" "}
+          BookMania{" "}
         </Link>
       </div>
 

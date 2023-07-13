@@ -1,10 +1,11 @@
+import Bannerr from "./Bannerr";
+
 const Home = () => {
   return (
     <div>
-      <h1>Home</h1>
+      <Bannerr />
     </div>
   );
 };
 
 export default Home;
-<h1>Home</h1>;

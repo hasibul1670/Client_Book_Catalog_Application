@@ -1,12 +1,12 @@
-import { useState } from "react";
+import { Toaster } from "react-hot-toast";
 import "./App.css";
+import MainLayout from "./layouts/MainLayout";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <h1>Hello </h1>
+      <Toaster />
+      <MainLayout />
     </>
   );
 }

@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { useState } from "react";
-import { SubmitHandler, FieldValues } from 'react-hook-form';
-
+import { useEffect, useState } from "react";
+import { FieldValues, SubmitHandler } from "react-hook-form";
 
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -10,7 +9,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
 
 import login from "../../assets/animation/38435-register.json";
-import { ILoginType } from "../../types/authType";
+import { loginUser } from "../../redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -18,12 +18,24 @@ const Login = () => {
   const [disabled, setDisabled] = useState(true);
   const from = location.state?.from?.pathname || "/";
 
+  interface LoginFormInputs {
+    email: string;
+    password: string;
+  }
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
+  const dispatch = useAppDispatch();
+
+
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    dispatch(loginUser({ email: data.email, password: data.password }));
+  };
+
 
   // const mutation = useMutation((userData) => loginUser(userData), {
   //   onSuccess: (data) => {
@@ -55,16 +67,8 @@ const Login = () => {
   //   },
   // });
 
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    const email = (data as ILoginType).email;
-    const password = (data as ILoginType).password;
-    console.log("Hello", email, password);
-  };
-  
-
   return (
     <div className="main-container  p-4 py-20 md:hero min-h-screen   justify-items-center">
-
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <div className=" text-center">
@@ -109,7 +113,7 @@ const Login = () => {
 
                   {errors.email?.type === "required" && (
                     <small className="text-red-600">
-                          <span className="text-red-600">Email is required!</span>
+                      <span className="text-red-600">Email is required!</span>
                     </small>
                   )}
                 </div>

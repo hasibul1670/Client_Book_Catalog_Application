@@ -2,6 +2,12 @@
 import { useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import {
+  setAccessToken,
+  setFirstName,
+  setUserEmail,
+} from "../../redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
 
 const NavBar = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -12,12 +18,10 @@ const NavBar = () => {
     setIsDrawerOpen(!isDrawerOpen);
     document.body.classList.toggle("drawer-open");
   };
-
   const handleCartSliderClose = () => {
     setIsDrawerOpen(false);
     document.body.classList.remove("drawer-open");
   };
-
   const toggleDropdown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
@@ -35,10 +39,7 @@ const NavBar = () => {
         </Link>
       </li>
       <li className="nav-link nav-link-ltr">
-        <Link
-          to="/checkout"
-          className="hover:text-white hover:bg-transparent"
-        >
+        <Link to="/checkout" className="hover:text-white hover:bg-transparent">
           CheckOut
         </Link>
       </li>
@@ -50,6 +51,23 @@ const NavBar = () => {
       </li> */}
     </>
   );
+
+  const { accessToken, firstName, userEmail } = useAppSelector(
+    (state) => state.auth
+  );
+
+  const dispatch = useAppDispatch();
+
+  console.log(firstName, userEmail);
+
+  const handleLogOut = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
+    localStorage.removeItem("firstName");
+    dispatch(setAccessToken({ data: { accessToken: null } }));
+    dispatch(setFirstName(null));
+    dispatch(setUserEmail({ data: { email: null } }));
+  };
 
   return (
     <div className="navbar fixed z-10  max-w-screen-2xl bg-gray-600	 ">
@@ -147,18 +165,18 @@ const NavBar = () => {
               </div>
             </div>
           </div>
-
-          <button className="btn btn-sm btn-outline ">
+        </>
+        {firstName && <p>{firstName}</p>}
+        {accessToken ? (
+          <button onClick={handleLogOut} className="btn btn-sm btn-outline ">
             <span className="text-white text-xs">logout</span>
           </button>
-        </>
-
-        <>
+        ) : (
           <Link to="/login">
             {" "}
             <button className="btn btn-sm btn-primary">Sign In</button>
           </Link>
-        </>
+        )}
       </div>
     </div>
   );

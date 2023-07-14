@@ -9,22 +9,11 @@ const productApi = api.injectEndpoints({
       query: (id) => `/books/${id}`,
     }),
    
-    // postComment: builder.mutation({
-    //   query: ({ id, data }) => ({
-    //     url: `/comment/${id}`,
-    //     method: "POST",
-    //     body: data,
-    //   }),
-    //   invalidatesTags: ["comments"],
-    // }),
-    // getComment: builder.query({
-    //   query: (id) => `/comment/${id}`,
-    //   providesTags: ["comments"],
-    // }),
   }),
 });
 
 export const {
+  
   useGetBooksQuery,
 
   useSingleBookQuery,

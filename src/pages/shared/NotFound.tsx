@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 
 import NavBar from "./Navbar";
 
+import img404 from "../../assets/home/404.png"
+
 
 const NotFound = () => {
   return (
@@ -10,7 +12,7 @@ const NotFound = () => {
       <div className="flex items-center justify-center min-h-screen">
         <div className="card w-96 glass mt-10">
           <figure>
-            {/* <img src={img404} alt="car!" /> */}
+      <img src={img404} alt="car!" /> 
           </figure>
           <div className="card-body items-center justify-center">
             <h2 className="card-title text-red-700 font-bold ">

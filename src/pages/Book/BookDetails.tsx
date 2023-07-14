@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useSingleBookQuery } from "../../redux/features/book/bookApi";
+import Footer from "../shared/Footer";
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -8,7 +9,7 @@ const BookDetails = () => {
   const bookData = book?.data[0];
   return (
     <div>
-      <div className="hero px-10  min-h-screen bg-base-200">
+      <div className="hero px-10 py-24  min-h-screen bg-base-200">
         <div className="hero-content flex-col lg:flex-row">
           <img
             src={bookData?.bookImage}
@@ -68,6 +69,7 @@ const BookDetails = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

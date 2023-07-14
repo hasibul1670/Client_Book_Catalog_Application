@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import CartSlider from "../../components/CartSlider";
 import {
   setAccessToken,
   setFirstName,
@@ -52,13 +53,9 @@ const NavBar = () => {
     </>
   );
 
-  const { accessToken, firstName } = useAppSelector(
-    (state) => state.auth
-  );
+  const { accessToken, firstName } = useAppSelector((state) => state.auth);
 
   const dispatch = useAppDispatch();
-
-
 
   const handleLogOut = () => {
     localStorage.removeItem("token");
@@ -67,6 +64,17 @@ const NavBar = () => {
     dispatch(setAccessToken({ data: { accessToken: null } }));
     dispatch(setFirstName(null));
     dispatch(setUserEmail({ data: { email: null } }));
+  };
+
+  const { book } = useAppSelector((state) => state.cart);
+
+  const totalQuantity = () => {
+    let totalQuantity = 0;
+    book.forEach((book) => {
+      totalQuantity += book.quantity;
+    });
+
+    return totalQuantity;
   };
 
   return (
@@ -148,11 +156,11 @@ const NavBar = () => {
             />
             <div className="drawer-content">
               <label htmlFor="my-drawer-4">
-                <div className="badge badge-outline badge-primary">
+                <div className="badge badge-outline  font-bold text-white">
                   <span>
                     <FaShoppingCart></FaShoppingCart>
                   </span>
-                  <span> || 0</span>
+                  <span className="m-2 font-bold text-xl" >{totalQuantity()}</span>
                 </div>
               </label>
             </div>
@@ -161,7 +169,10 @@ const NavBar = () => {
               <label htmlFor="my-drawer-4" className="drawer-overlay"></label>
 
               <div className="menu bg-base-300 p-4 w-72 h-full  text-base-content">
-                <ul className="cart-slider-list"></ul>
+                <ul className="cart-slider-list">
+                  {" "}
+                  <CartSlider onClose={handleCartSliderClose} />
+                </ul>
               </div>
             </div>
           </div>

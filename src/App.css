@@ -31,7 +31,7 @@
   height: 3px;
   content: "";
   position: absolute;
-  background-color: #42ff61;
+  background-color: #009dff;
 }
 
 .nav-link-ltr::before {
@@ -64,11 +64,15 @@
   height: 5px;
 }
 
+
+
 /*  */
 
 .drawer-side {
   background-attachment: fixed;
 }
+
+
 
 .cart-slider-list {
   height: 100%;
@@ -78,3 +82,4 @@
 body.drawer-open {
   overflow: hidden;
 }
+

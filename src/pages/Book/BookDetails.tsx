@@ -1,12 +1,29 @@
+import { toast } from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import { useSingleBookQuery } from "../../redux/features/book/bookApi";
+import { addToCart } from "../../redux/features/cart/cartSlice";
+import { useAppDispatch } from "../../redux/hook";
+import { IBook } from "../../types/bookTypes";
 import Footer from "../shared/Footer";
 
+
+
+
 const BookDetails = () => {
+  const dispatch = useAppDispatch();
+  const handleAddBook = (book: IBook) => {
+    dispatch(addToCart(book));
+    toast.success("Product Added to Cart Successfully!");
+  };
+
   const { id } = useParams();
 
-  const { data: book, isLoading, error } = useSingleBookQuery(id);
+  const { data: book } = useSingleBookQuery(id);
   const bookData = book?.data[0];
+
+
+
+
   return (
     <div>
       <div className="hero px-10 py-24  min-h-screen bg-base-200">
@@ -48,22 +65,19 @@ const BookDetails = () => {
 
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
-            {/* <Link>
-              <button
-                onClick={handlebookEnrolled}
-                className="btn btn-outline btn-sm  "
-              >
-                Enroll Now
-              </button>
-            </Link>
-            <Link>
-              <button
-                onClick={handlebookAddToCart}
-                className="btn btn-outline btn-secondary btn-sm mx-2  "
-              >
-                Add to Cart
-              </button>
-            </Link> */}
+            <button
+         
+              className="btn btn-outline btn-sm  "
+            >
+              Buy Now
+            </button>
+
+            <button
+              onClick={() => handleAddBook(bookData)}
+              className="btn btn-outline btn-primary btn-sm mx-2  "
+            >
+              Add to Cart
+            </button>
 
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
           </div>

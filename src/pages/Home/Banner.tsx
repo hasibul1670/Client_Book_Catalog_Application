@@ -13,8 +13,6 @@ const Banner = () => {
       <Carousel
         autoPlay={true}
         infiniteLoop={true}
-        showIndicators={true}
-        showThumbs={true}
         swipeable={true}
       >
         <div>

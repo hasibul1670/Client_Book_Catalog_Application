@@ -30,29 +30,29 @@ const NavBar = () => {
         </Link>
       </li>
       <li className="nav-link nav-link-ltr">
-        <Link to="/courses" className="hover:text-white hover:bg-transparent">
+        <Link to="/books" className="hover:text-white hover:bg-transparent">
           Books
         </Link>
       </li>
       <li className="nav-link nav-link-ltr">
         <Link
-          to="/instructors"
+          to="/checkout"
           className="hover:text-white hover:bg-transparent"
         >
           CheckOut
         </Link>
       </li>
 
-      <li className="nav-link nav-link-ltr">
+      {/* <li className="nav-link nav-link-ltr">
         <Link to="/dashboard" className="hover:text-white hover:bg-transparent">
           Dashboard
         </Link>
-      </li>
+      </li> */}
     </>
   );
 
   return (
-    <div className="navbar fixed  z-10  max-w-screen-2xl bg-gray-600	 ">
+    <div className="navbar z-10  max-w-screen-2xl bg-gray-600	 ">
       <div className="navbar-start">
         <div className="dropdown ">
           {!isDropdownOpen ? (

@@ -1,11 +1,13 @@
-import BookPage from "../Book/BookPage";
+import Footer from "../shared/Footer";
 import Bannerr from "./Banner";
+import BooksCategory from "./BookCategory";
 
 const Home = () => {
   return (
     <div>
       <Bannerr />
-      <BookPage/>
+      <BooksCategory />
+      <Footer />
     </div>
   );
 };

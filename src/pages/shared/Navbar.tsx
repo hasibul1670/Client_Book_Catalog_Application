@@ -52,7 +52,7 @@ const NavBar = () => {
   );
 
   return (
-    <div className="navbar z-10  max-w-screen-2xl bg-gray-600	 ">
+    <div className="navbar fixed z-10  max-w-screen-2xl bg-gray-600	 ">
       <div className="navbar-start">
         <div className="dropdown ">
           {!isDropdownOpen ? (

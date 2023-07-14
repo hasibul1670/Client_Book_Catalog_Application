@@ -82,6 +82,8 @@ const Banner = () => {
           </div>
         </div>
       </Carousel>
+
+  
     </>
   );
 };

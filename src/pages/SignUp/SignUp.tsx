@@ -1,9 +1,12 @@
 /* eslint-disable no-unused-vars */
 import Lottie from "lottie-react";
-import { useForm } from "react-hook-form";
-import { FieldValues, SubmitHandler } from "react-hook-form";
+import { useEffect } from "react";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 import signup from "../../assets/animation/118046-lf20-oahmox5rjson.json";
+import { createUser } from "../../redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
 
 const SignUp = () => {
   const {
@@ -13,34 +16,42 @@ const SignUp = () => {
     formState: { errors },
   } = useForm();
 
-  // const mutation = useMutation((userData) => createUser(userData), {
-  //   onSuccess: (data) => {
-  //     reset();
-  //     Swal.fire({
-  //       position: "top-center",
-  //       icon: "success",
-  //       title: "User created successfully.",
-  //       showConfirmButton: false,
-  //       timer: 1500,
-  //     });
-  //   },
-  //   onError: (error) => {
-  //     Swal.fire({
-  //       position: "top-center",
-  //       icon: "error",
-  //       title: error.message,
-  //       showConfirmButton: false,
-  //       timer: 1500,
-  //     });
-  //   },
-  // });
+  const dispatch = useAppDispatch();
+  const { isSuccess, error, isLoading } = useAppSelector((state) => state.auth);
+
+  console.log(isSuccess,error, isLoading);
+  useEffect(() => {
+    if (isSuccess && !error) {
+      Swal.fire({
+        position: "top",
+        icon: "success",
+        title: "Congratulation!! Signup Successfully Done!!❤️",
+        showConfirmButton: true,
+        timer: 2500,
+      });
+      reset();
+    }
+    if (error) {
+      Swal.fire({
+        position: "top",
+        icon: "error",
+        title: "Signup Failure ! please try again!",
+        showConfirmButton: true,
+        timer: 2500,
+      });
+      reset();
+    }
+  }, [error, isSuccess, reset]);
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    const email = data.email;
-    const password = data.password;
-    const firstName = data.firstName;
-    const lastName = data.lastName;
-    console.log(email, password, firstName, lastName);
+    dispatch(
+      createUser({
+        email: data.email,
+        password: data.password,
+        lastName: data.lastName,
+        firstName: data.firstName,
+      })
+    );
   };
 
   return (

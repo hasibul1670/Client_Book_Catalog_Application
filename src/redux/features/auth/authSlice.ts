@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { AuthState } from "./authTypes";
 
 const initialState: AuthState = {
   loggedIn: false,
   loading: false,
+  isLoading: false,
+  isSuccess: false,
   error: null,
   firstName: localStorage.getItem("firstName") || null,
   userEmail: localStorage.getItem("email") || null,
@@ -34,7 +37,7 @@ export const loginUser = createAsyncThunk(
   }
 );
 export const createUser = createAsyncThunk(
-  "login",
+  "signup",
   async ({
     email,
     password,
@@ -47,17 +50,18 @@ export const createUser = createAsyncThunk(
     lastName: string;
   }) => {
     try {
-      // Make the API call here (replace with your actual implementation)
-      const response = await fetch("localhost:4000/api/v1/user/create-user", {
-        method: "POST",
-        body: JSON.stringify({ email, password,firstName, lastName}),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
+      const response = await fetch(
+        "http://localhost:4000/api/v1/user/create-user",
+        {
+          method: "POST",
+          body: JSON.stringify({ email, password, firstName, lastName }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
-        throw new Error("Login failed");
+        throw new Error("SIGNUP failed");
       }
       const data = await response.json();
       return data;
@@ -92,27 +96,42 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(loginUser.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(loginUser.fulfilled, (state, action) => {
-      state.loading = false;
-      state.loggedIn = true;
-      state.userEmail = action.payload.data.email;
-      state.accessToken = action.payload.data.accessToken;
-      state.firstName = action.payload.data.userDetails.firstName;
-      localStorage.setItem("token", action.payload.data.accessToken);
-      localStorage.setItem("email", action.payload.data.email);
-      localStorage.setItem(
-        "firstName",
-        action.payload.data.userDetails.firstName
-      );
-    });
-    builder.addCase(loginUser.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.error.message || "Login failed";
-    });
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.loggedIn = true;
+        state.userEmail = action.payload.data.email;
+        state.accessToken = action.payload.data.accessToken;
+        state.firstName = action.payload.data.userDetails.firstName;
+        localStorage.setItem("token", action.payload.data.accessToken);
+        localStorage.setItem("email", action.payload.data.email);
+        localStorage.setItem(
+          "firstName",
+          action.payload.data.userDetails.firstName
+        );
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Login failed";
+      })
+
+      .addCase(createUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createUser.fulfilled, (state) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+    
+      })
+      .addCase(createUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message || "Signup failed";
+     
+      });
   },
 });
 

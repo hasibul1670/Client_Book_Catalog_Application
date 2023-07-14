@@ -29,9 +29,8 @@ const Login = () => {
     reset,
     formState: { errors },
   } = useForm();
+
   const dispatch = useAppDispatch();
-
-
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     dispatch(loginUser({ email: data.email, password: data.password }));
   };

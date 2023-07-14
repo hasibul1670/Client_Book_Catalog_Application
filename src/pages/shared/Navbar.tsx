@@ -52,13 +52,13 @@ const NavBar = () => {
     </>
   );
 
-  const { accessToken, firstName, userEmail } = useAppSelector(
+  const { accessToken, firstName } = useAppSelector(
     (state) => state.auth
   );
 
   const dispatch = useAppDispatch();
 
-  console.log(firstName, userEmail);
+
 
   const handleLogOut = () => {
     localStorage.removeItem("token");

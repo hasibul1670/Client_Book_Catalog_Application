@@ -61,6 +61,7 @@ const NavBar = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
     localStorage.removeItem("firstName");
+    localStorage.removeItem("cart");
     dispatch(setAccessToken({ data: { accessToken: null } }));
     dispatch(setFirstName(null));
     dispatch(setUserEmail({ data: { email: null } }));

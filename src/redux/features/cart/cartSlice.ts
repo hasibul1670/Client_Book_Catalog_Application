@@ -6,15 +6,17 @@ interface ICart {
   book: IBook[];
   total: number;
 }
-
-const initialState: ICart = {
-  book: [],
-  total: 0,
-};
+const storedCart = localStorage.getItem("cart");
+const initialCartState: ICart = storedCart
+  ? JSON.parse(storedCart)
+  : {
+      book: [],
+      total: 0,
+    };
 
 const cartSlice = createSlice({
   name: "cart",
-  initialState,
+  initialState: initialCartState,
   reducers: {
     addToCart: (state, action: PayloadAction<IBook>) => {
       const existing = state.book.find(
@@ -28,6 +30,7 @@ const cartSlice = createSlice({
       }
 
       state.total += action.payload.price;
+      localStorage.setItem("cart", JSON.stringify(state));
     },
     removeOne: (state, action: PayloadAction<IBook>) => {
       const existing = state.book.find(
@@ -43,6 +46,7 @@ const cartSlice = createSlice({
       }
 
       state.total -= action.payload.price;
+      localStorage.setItem("cart", JSON.stringify(state));
     },
     removeFromCart: (state, action: PayloadAction<IBook>) => {
       state.book = state.book.filter(
@@ -50,6 +54,7 @@ const cartSlice = createSlice({
       );
 
       state.total -= action.payload.price * action.payload.quantity!;
+      localStorage.setItem("cart", JSON.stringify(state));
     },
   },
 });

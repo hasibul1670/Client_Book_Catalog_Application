@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 
 import { useForm } from "react-hook-form";
@@ -10,7 +10,7 @@ import Lottie from "lottie-react";
 
 import login from "../../assets/animation/38435-register.json";
 import { loginUser } from "../../redux/features/auth/authSlice";
-import { useAppDispatch, useAppSelector } from "../../redux/hook";
+import { useAppDispatch } from "../../redux/hook";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -33,38 +33,8 @@ const Login = () => {
   const dispatch = useAppDispatch();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     dispatch(loginUser({ email: data.email, password: data.password }));
+    reset();
   };
-
-
-  // const mutation = useMutation((userData) => loginUser(userData), {
-  //   onSuccess: (data) => {
-  //     reset();
-
-  //     const token = data.data.accessToken;
-  //     const email = data.data.email;
-  //     localStorage.setItem("token", token);
-  //     localStorage.setItem("email", email);
-
-  //     Swal.fire({
-  //       position: "top-center",
-  //       icon: "success",
-  //       title: "User logged in successfully.",
-  //       showConfirmButton: false,
-  //       timer: 1500,
-  //     });
-  //     setUser({ token, email });
-  //     navigate(from, { replace: true });
-  //   },
-  //   onError: (error) => {
-  //     Swal.fire({
-  //       position: "top-center",
-  //       icon: "error",
-  //       title: error.message,
-  //       showConfirmButton: false,
-  //       timer: 1500,
-  //     });
-  //   },
-  // });
 
   return (
     <div className="main-container  p-4 py-20 md:hero min-h-screen   justify-items-center">

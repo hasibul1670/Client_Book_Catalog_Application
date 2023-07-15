@@ -6,7 +6,7 @@ const Footer = () => {
       <footer className="footer footer-center p-10 bg-gray-600 text-base-content rounded">
         <div className="grid grid-flow-col gap-4 text-white">
           <Link to="/about-us" className="link link-hover ">
-            About Bookmania
+            AboutUs
           </Link>
           <Link to="/contactUs" className="link link-hover">
             Contact

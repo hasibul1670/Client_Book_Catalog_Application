@@ -6,7 +6,7 @@ const Footer = () => {
       <footer className="footer footer-center p-10 bg-gray-600 text-base-content rounded">
         <div className="grid grid-flow-col gap-4 text-white">
           <Link to="/about-us" className="link link-hover ">
-            About us
+            About Bookmania
           </Link>
           <Link to="/contactUs" className="link link-hover">
             Contact
@@ -61,7 +61,14 @@ const Footer = () => {
         <div>
           <p className="text-white font-bold">
             Copyright © 2023 - All right reserved by
-            <Link className="text-cyan-300 underline" target="_blank" to="https://hasibul-islam365.netlify.app/"> Hasibul Islam</Link>
+            <Link
+              className="text-cyan-300 underline"
+              target="_blank"
+              to="https://hasibul-islam365.netlify.app/"
+            >
+              {" "}
+              Hasibul Islam
+            </Link>
           </p>
         </div>
       </footer>

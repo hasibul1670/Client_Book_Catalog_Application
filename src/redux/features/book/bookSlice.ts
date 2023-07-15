@@ -1,18 +1,20 @@
-import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 interface Ibook {
   status: boolean;
   priceRange: number;
+  statusCode: number | null | string;
 }
 
 const initialState: Ibook = {
   status: false,
   priceRange: 400,
+  statusCode: null,
 };
 
 const bookSlice = createSlice({
-  name: 'book',
+  name: "book",
   initialState,
   reducers: {
     toggleState: (state) => {

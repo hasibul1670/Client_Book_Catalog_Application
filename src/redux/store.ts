@@ -8,7 +8,6 @@ const store = configureStore({
   reducer: {
     cart: cartReducer,
     auth: authReducer,
-
     book: bookReducer,
     [api.reducerPath]: api.reducer,
   },

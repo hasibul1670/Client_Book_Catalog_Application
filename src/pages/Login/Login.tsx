@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 
 import { useForm } from "react-hook-form";
@@ -10,31 +11,35 @@ import Lottie from "lottie-react";
 
 import login from "../../assets/animation/38435-register.json";
 import { loginUser } from "../../redux/features/auth/authSlice";
-import { useAppDispatch } from "../../redux/hook";
+import { useAppDispatch, useAppSelector } from "../../redux/hook";
 
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [disabled, setDisabled] = useState(true);
+
   const from = location.state?.from?.pathname || "/";
 
-  interface LoginFormInputs {
-    email: string;
-    password: string;
-  }
-
+ 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
+  const { userEmail,loading } = useAppSelector((state) => state.auth);
 
+  
   const dispatch = useAppDispatch();
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     dispatch(loginUser({ email: data.email, password: data.password }));
     reset();
   };
+
+  useEffect(() => {
+    if (userEmail && !loading) {
+      navigate('/');
+    }
+  }, [loading, userEmail]);
 
   return (
     <div className="main-container  p-4 py-20 md:hero min-h-screen   justify-items-center">

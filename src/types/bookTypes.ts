@@ -11,3 +11,10 @@ export type IBook = {
   bookImage?: string;
   rating?: number;
 };
+
+export interface Book {
+  id: number;
+  title: string;
+  author: string;
+  status: "wishlist" | "currentlyReading" | "planToRead" | "finishedReading";
+}

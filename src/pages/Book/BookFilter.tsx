@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const BookFilter = ({
   priceRange,
   setSelectedGenre,
@@ -56,6 +58,12 @@ const BookFilter = ({
         <option value="2021">2021</option>
       
       </select>
+
+        <Link to="/add-new-book" className="hover:text-black btn btn-primary mt-5 hover:bg-transparent">
+        Add New Books
+        </Link>
+    
+
     </div>
   );
 };

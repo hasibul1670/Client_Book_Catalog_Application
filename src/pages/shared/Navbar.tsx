@@ -40,8 +40,13 @@ const NavBar = () => {
         </Link>
       </li>
       <li className="nav-link nav-link-ltr">
-        <Link to="/checkout" className="hover:text-white hover:bg-transparent">
-          CheckOut
+        <Link to="/wishlist" className="hover:text-white hover:bg-transparent">
+          WishList
+        </Link>
+      </li>
+      <li className="nav-link nav-link-ltr">
+        <Link to="/add-new-book" className="hover:text-white hover:bg-transparent">
+        Add New Books
         </Link>
       </li>
 

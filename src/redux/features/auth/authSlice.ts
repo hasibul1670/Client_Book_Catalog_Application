@@ -25,7 +25,6 @@ export const loginUser = createAsyncThunk(
           "Content-Type": "application/json",
         },
       });
-
       if (!response.ok) {
         throw new Error("Login failed");
       }

@@ -1,18 +1,19 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CartSlider from "../../components/CartSlider";
 import {
   setAccessToken,
   setFirstName,
   setUserEmail,
 } from "../../redux/features/auth/authSlice";
+import { useCreateWishListMutation } from "../../redux/features/wishlist/wishListApi";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 
 const NavBar = () => {
+  const navigate = useNavigate();
   const [isDropdownOpen, setDropdownOpen] = useState(false);
-
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -45,8 +46,11 @@ const NavBar = () => {
         </Link>
       </li>
       <li className="nav-link nav-link-ltr">
-        <Link to="/add-new-book" className="hover:text-white hover:bg-transparent">
-        Add New Books
+        <Link
+          to="/add-new-book"
+          className="hover:text-white hover:bg-transparent"
+        >
+          Add New Books
         </Link>
       </li>
 
@@ -61,15 +65,31 @@ const NavBar = () => {
   const { accessToken, firstName } = useAppSelector((state) => state.auth);
 
   const dispatch = useAppDispatch();
+  const [createWishList] = useCreateWishListMutation();
+
+  const wishListData = localStorage.getItem("wishlist");
+  const email = localStorage.getItem("email");
+  const wishList = wishListData ? JSON.parse(wishListData) : [];
+
+  const handleWishList = async () => {
+    const options = {
+      data: { wishList: wishList?.book, email: email || "" },
+    };
+    await createWishList(options).unwrap();
+  };
 
   const handleLogOut = () => {
+    handleWishList();
     localStorage.removeItem("token");
     localStorage.removeItem("email");
     localStorage.removeItem("firstName");
     localStorage.removeItem("cart");
+    localStorage.removeItem("wish");
+    localStorage.removeItem("wishlist");
     dispatch(setAccessToken({ data: { accessToken: null } }));
     dispatch(setFirstName(null));
     dispatch(setUserEmail({ data: { email: null } }));
+    navigate("/");
   };
 
   const { book } = useAppSelector((state) => state.cart);
@@ -166,7 +186,9 @@ const NavBar = () => {
                   <span>
                     <FaShoppingCart></FaShoppingCart>
                   </span>
-                  <span className="m-2 font-bold text-xl" >{totalQuantity()}</span>
+                  <span className="m-2 font-bold text-xl">
+                    {totalQuantity()}
+                  </span>
                 </div>
               </label>
             </div>

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { FieldValues, SubmitHandler } from "react-hook-form";
 
 import { useForm } from "react-hook-form";
@@ -9,6 +9,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import Lottie from "lottie-react";
 
+import { ReactNode } from "react";
+import { toast } from "react-hot-toast";
 import login from "../../assets/animation/38435-register.json";
 import { loginUser } from "../../redux/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
@@ -19,25 +21,36 @@ const Login = () => {
 
   const from = location.state?.from?.pathname || "/";
 
- 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm();
-  const { userEmail,loading } = useAppSelector((state) => state.auth);
+  const { userEmail, loading } = useAppSelector((state) => state.auth);
 
-  
   const dispatch = useAppDispatch();
-  const onSubmit: SubmitHandler<FieldValues> = (data) => {
-    dispatch(loginUser({ email: data.email, password: data.password }));
-    reset();
-  };
 
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      const result = await dispatch(
+        loginUser({ email: data.email, password: data.password })
+      );
+   
+
+      if (result.payload?.statusCode) {
+        toast.success("Successfully Logged In !! ");
+            reset();
+      } else {
+        toast.error("Incorrect Password");
+      }
+    } catch (error) {
+      toast.error("Login error:");
+    }
+  };
   useEffect(() => {
     if (userEmail && !loading) {
-      navigate('/');
+      navigate("/");
     }
   }, [loading, userEmail]);
 
@@ -85,9 +98,9 @@ const Login = () => {
                     className="input input-bordered"
                   />
 
-                  {errors.email?.type === "required" && (
+                  {errors.email && (
                     <small className="text-red-600">
-                      <span className="text-red-600">Email is required!</span>
+                      {errors.email.message as ReactNode}
                     </small>
                   )}
                 </div>

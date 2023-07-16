@@ -1,21 +1,27 @@
 import { api } from "../../api/apiSlice";
 
-
 const productApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getBooks: builder.query({
       query: () => "/books",
     }),
+
     singleBook: builder.query({
       query: (id) => `/books/${id}`,
     }),
-
 
     postBook: builder.mutation({
       query: ({ data }) => ({
         url: `/books/create-book`,
         method: "POST",
         body: data,
+      }),
+    }),
+
+    deleteBook: builder.mutation({
+      query: (id) => ({
+        url: `/books/${id}`,
+        method: "DELETE",
       }),
     }),
 
@@ -26,20 +32,22 @@ const productApi = api.injectEndpoints({
         body: data,
       }),
       invalidatesTags: ["review"],
-
     }),
-
-    getReview: builder.query({
-      query: (id) => `/review/${id}`,
-      providesTags: ["review"],
+    editBook: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/books/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
     }),
   }),
 });
 
 export const {
   useGetBooksQuery,
+  useEditBookMutation,
   usePostReviewMutation,
-  useGetReviewQuery,
   usePostBookMutation,
+  useDeleteBookMutation,
   useSingleBookQuery,
 } = productApi;

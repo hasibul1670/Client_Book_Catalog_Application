@@ -5,13 +5,14 @@ import { toast } from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import defaultBook from "../../assets/defaultbook.jpg";
 import {
-  usePostReviewMutation,
+  useEditBookMutation,
   useSingleBookQuery,
 } from "../../redux/features/book/bookApi";
 import { addToCart } from "../../redux/features/cart/cartSlice";
 import { useAppDispatch } from "../../redux/hook";
 import { IBook } from "../../types/bookTypes";
 
+import { ReactNode, useEffect } from "react";
 import Footer from "../shared/Footer";
 
 const defaultBookRating = 4.5;
@@ -22,6 +23,14 @@ const EditBookPage = () => {
     toast.success("Product Added to Cart Successfully!");
   };
 
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm();
+
   const { id } = useParams();
   const { data: book } = useSingleBookQuery(id, {
     refetchOnMountOrArgChange: true,
@@ -29,163 +38,218 @@ const EditBookPage = () => {
   });
 
   const bookData = book?.data[0];
-  const reviewData = bookData?.review;
+  useEffect(() => {
+    if (bookData) {
+      setValue("title", bookData.title);
+      setValue("author", bookData.author);
+      setValue("genre", bookData.genre);
+      setValue("publishedDate", bookData.publicationDate);
+      setValue("year", bookData.year);
+      setValue("price", bookData.price);
+      setValue("bookDescription", bookData.bookDescription);
+    }
+  }, [bookData, setValue]);
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm();
+  const [editBook] = useEditBookMutation();
+  const editedBy = localStorage.getItem("email");
 
-  const [postReview] = usePostReviewMutation();
-  const writtenBy = localStorage.getItem("firstName");
   const onSubmit: SubmitHandler<FieldValues> = async (data, e) => {
     e!.preventDefault();
     const options = {
       id: id,
-      data: { title: data.title, writtenBy: writtenBy },
+      data: {
+        title: data.title,
+        editedBy: editedBy,
+        author: data.author,
+        genre: data.genre,
+        publicationDate: data.publishedDate,
+        year: data.year,
+        price: data.price,
+        bookDescription: data.bookDescription,
+      },
     };
-    const result = await postReview(options).unwrap();
+    const result = await editBook(options).unwrap();
     const { statusCode } = result;
+    console.log("Hellosssssssssssss", result);
     if (statusCode === 200) {
-      toast.success("Review Added SuccessFully");
+      toast.success("Book Edited SuccessFully");
     } else {
       toast.error("Internal Server Error!! please try again Later");
     }
     reset();
   };
 
+  const handleDeleteBook = () => {
+    console.log("Hello bokk is deleted");
+  };
   const loggedInEmail = localStorage.getItem("email");
   return (
     <div className="">
-      <div className="hero px-10 py-24  min-h-screen bg-base-200">
-        <div className="hero-content flex-col lg:flex-row">
+      <div className="hero px-10 py-24   min-h-screen">
+        <div className="hero-content   w-full  flex-col lg:flex-row">
           <img
             src={bookData?.bookImage || defaultBook}
-            className="max-w-sm rounded-lg shadow-2xl"
+            className="max-w-sm  rounded-lg shadow-2xl"
           />
-          
-          <div>
-            <p className="text-xs font-bold">{id}</p>
-            <h1 className="text-xl text-cyan-400 font-bold">
-              {bookData?.title}
-            </h1>
 
-            <p className=" text-md text-teal-500 font-semibold ">
-              Written By : {bookData?.author}
-            </p>
-            <p className=" text-md text-red-400 font-semibold ">
-              Genre : {bookData?.genre}
-            </p>
-
-            <p className=" text-md font-semibold ">
-              Description :{" "}
-              <span className="text-sm text-cyan-800">
-                {bookData?.bookDescription}
-              </span>
-            </p>
-
-            <p className=" text-md font-semibold ">
-              Publication Date : {bookData?.publicationDate}
-            </p>
-
-            <p className=" text-md font-semibold ">
-              Rating : {bookData?.rating || defaultBookRating}
-            </p>
-            <p className=" text-md font-semibold ">
-              Price : $ {bookData?.price}
-            </p>
-
-            <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
-
-
-            {loggedInEmail === bookData?.addedBy && (
-              <>
-                    <button
-                onClick={() => handleAddBook(bookData)}
-                className="btn ml-2 btn-outline btn-sm"
-              >
-                Edit this Book
-              </button>
-              <button
-                onClick={() => handleAddBook(bookData)}
-                className="btn ml-2 btn-outline btn-sm"
-              >
-                Delete this Book
-              </button>
-              </>
-        
-            )}
-
-     
-
-            <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
-
-            <small className=" text-xs text-blue-700 font-semibold ">
-              This Book is Added By : {bookData?.addedBy}
-            </small>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex mb-5  ">
-        <div className="w-25 ">
-          {reviewData &&
-            reviewData
-              .slice()
-              .reverse()
-              .map((item: any) => (
-                <div className="card w-96 h-32 mb-5 bg-base-300 shadow-xl">
-                  <div className="card-body">
-                    <h2 className="text-cyan-500 font-bold">
-                      <small className="text-xs">Reviewed By:</small>
-                      {item?.writtenBy}
-                    </h2>
-                    <p className="text-sm text-gray-900">{item.title}</p>
-                    <p className="text-xs font-bold text-red-800">
-                      {item.date}
-                    </p>
-                  </div>
-                </div>
-              ))}
-        </div>
-
-        <div className="w-full flex  items-start  justify-end">
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="md:hero font-bold mt-5 ml-16"
-          >
-            <div className="card flex-shrink-0 w-full  max-w-screen-sm shadow-2xl ">
-              <div className="card-body">
-                {/* Book Review */}
-
+          <div className=" bg-base-200 p-16 w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className=" font-bold ">
+              <div className="  ">
+                <p className="text-cyan-500  ">Edit Book </p>
+                <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+                {/* Title */}
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Add Review For that Book</span>
+                    <span className="label-text"> Title: </span>
                   </label>
-                  <textarea
+                  <input
                     {...register("title", { required: true })}
                     name="title"
-                    placeholder="Write Review here....."
-                    className="input input-bordered h-32"
+                    placeholder="Book Title "
+                    className="input input-bordered"
                     aria-invalid={errors.title ? "true" : "false"}
                   />
                   {errors.title?.type === "required" && (
+                    <small className="text-red-600">Title is required!</small>
+                  )}
+                </div>
+                {/* Author */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Author:</span>
+                  </label>
+                  <input
+                    {...register("author", { required: true })}
+                    name="author"
+                    placeholder="Author"
+                    className="input input-bordered"
+                    aria-invalid={errors.author ? "true" : "false"}
+                  />
+                  {errors.author?.type === "required" && (
+                    <small className="text-red-600">Author is required!</small>
+                  )}
+                </div>
+
+                {/* Genre */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Genre:</span>
+                  </label>
+                  <input
+                    {...register("genre", { required: true })}
+                    name="genre"
+                    placeholder="Genre"
+                    className="input input-bordered"
+                    aria-invalid={errors.genre ? "true" : "false"}
+                  />
+                  {errors.genre?.type === "required" && (
+                    <small className="text-red-600">Genre is required!</small>
+                  )}
+                </div>
+
+                {/* Published Date */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Published Date:</span>
+                  </label>
+                  <input
+                    {...register("publishedDate", { required: true })}
+                    name="publishedDate"
+                    type="date"
+                    className="input input-bordered"
+                    aria-invalid={errors.publishedDate ? "true" : "false"}
+                  />
+                  {errors.publishedDate?.type === "required" && (
                     <small className="text-red-600">
-                      Book Review is required!
+                      Published Date is required!
+                    </small>
+                  )}
+                </div>
+
+                {/* Year */}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Year:</span>
+                  </label>
+                  <input
+                    {...register("year", {
+                      required: true,
+                      pattern: {
+                        value: /^\d{4}$/,
+                        message: "Year must be a 4-digit number",
+                      },
+                    })}
+                    name="year"
+                    type="number"
+                    placeholder="Year"
+                    className="input input-bordered"
+                    aria-invalid={errors.year ? "true" : "false"}
+                  />
+                  {errors.year?.type === "required" && (
+                    <small className="text-red-600">Year is required!</small>
+                  )}
+                  {errors.year?.type === "pattern" && (
+                    <small className="text-red-600">
+                      {errors.year.message as ReactNode}
+                    </small>
+                  )}
+                </div>
+
+                {/* Book Description */}
+
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">Book Description:</span>
+                  </label>
+                  <textarea
+                    {...register("bookDescription", {
+                      required: "Book Description is required!",
+                    })}
+                    name="bookDescription"
+                    placeholder="Book Description"
+                    className="input input-bordered h-32"
+                    aria-invalid={errors.bookDescription ? "true" : "false"}
+                  />
+                  {errors.bookDescription && (
+                    <small className="text-red-600">
+                      {errors.bookDescription.message as ReactNode}
                     </small>
                   )}
                 </div>
 
                 <div className="form-control mt-6">
-                  <button className="btn font-bold btn-primary">
-                    Add Review
-                  </button>
+                  {loggedInEmail === bookData?.addedBy && (
+                    <button className="btn font-bold btn-primary">
+                      Edit This Book
+                    </button>
+                  )}
                 </div>
               </div>
-            </div>
-          </form>
+            </form>
+
+            <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+
+            {loggedInEmail === bookData?.addedBy && (
+              <>
+                <button
+                  onClick={() => handleDeleteBook(bookData)}
+                  className="btn ml-2  btn-outline btn-sm"
+                >
+                  Delete this Book
+                </button>
+              </>
+            )}
+
+            <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
+
+            <small className=" text-xs text-blue-700 font-semibold ">
+              Last Edited By : {bookData?.addedBy} at <span className="text-red-500">{bookData?.lastUpdateTime}</span> 
+            </small>
+            <br />
+            <small className=" text-xs text-blue-700 font-semibold ">
+              This Book is Added By : {bookData?.addedBy}
+            </small>
+          </div>
         </div>
       </div>
 

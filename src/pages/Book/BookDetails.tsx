@@ -13,6 +13,8 @@ import { useAppDispatch } from "../../redux/hook";
 import { IBook } from "../../types/bookTypes";
 
 import Footer from "../shared/Footer";
+import NotFound from "../shared/NotFound";
+import Loading from "../shared/Loading";
 
 const defaultBookRating = 4.5;
 const BookDetails = () => {
@@ -23,13 +25,6 @@ const BookDetails = () => {
   };
 
   const { id } = useParams();
-  const { data: book } = useSingleBookQuery(id, {
-    refetchOnMountOrArgChange: true,
-    pollingInterval: 9000,
-  });
-
-  const bookData = book?.data[0];
-  const reviewData = bookData?.review;
 
   const {
     register,
@@ -57,6 +52,18 @@ const BookDetails = () => {
   };
 
   const loggedInEmail = localStorage.getItem("email");
+  const { data: book ,isLoading} = useSingleBookQuery(id, {
+    refetchOnMountOrArgChange: true,
+    pollingInterval: 9000,
+  });
+  if (isLoading) {
+    return <Loading/>; 
+  }
+  if (book?.data[0] === undefined) {
+    return <NotFound />;
+  }
+  const bookData = book?.data[0];
+  const reviewData = bookData?.review;
   return (
     <div className="">
       <div className="hero px-10 py-24  min-h-screen bg-base-200">

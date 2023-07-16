@@ -18,13 +18,16 @@ export const loginUser = createAsyncThunk(
   async ({ email, password }: { email: string; password: string }) => {
     try {
       // Make the API call here (replace with your actual implementation)
-      const response = await fetch("http://localhost:4000/api/v1/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        "https://server-book-catalog-application.vercel.app/api/v1/auth/login",
+        {
+          method: "POST",
+          body: JSON.stringify({ email, password }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error("Login failed");
       }
@@ -50,7 +53,7 @@ export const createUser = createAsyncThunk(
   }) => {
     try {
       const response = await fetch(
-        "http://localhost:4000/api/v1/user/create-user",
+        "https://server-book-catalog-application.vercel.app/api/v1/user/create-user",
         {
           method: "POST",
           body: JSON.stringify({ email, password, firstName, lastName }),
@@ -124,12 +127,10 @@ const authSlice = createSlice({
       .addCase(createUser.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
-    
       })
       .addCase(createUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message || "Signup failed";
-     
       });
   },
 });

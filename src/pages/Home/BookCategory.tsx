@@ -13,12 +13,12 @@ const BooksCategory = () => {
     <div className="mb-5 ">
       <SectionTitle
         subHeading=""
-        heading={" Newly Lunched Books  "}
+        heading={"recently added book   "}
       ></SectionTitle>
       <div className="flex justify-center  container mx-auto mb-5    px-4">
         <div className="flex justify-center px-4">
           <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {booksData?.slice(0, 4).map((book: IBook) => (
+            {booksData?.slice(0, 10).map((book: IBook) => (
               <BookCard book={book} key={book.id} />
             ))}
           </div>

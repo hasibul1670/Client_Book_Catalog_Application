@@ -1,14 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
+import AddNewBook from "../pages/Book/AddNewBook";
 import BookDetails from "../pages/Book/BookDetails";
 import BookPage from "../pages/Book/BookPage";
+import EditBookPage from "../pages/Book/EditBookPage";
+import WishlistPage from "../pages/Book/WishList";
 import Home from "../pages/Home/Home";
+import SignUp from "../pages/SignUp/SignUp";
 import NotFound from "../pages/shared/NotFound";
 import Login from "./../pages/Login/Login";
-import SignUp from "../pages/SignUp/SignUp";
-import AddNewBook from "../pages/Book/AddNewBook";
-import WishlistPage from "../pages/Book/WishList";
-import EditBookPage from "../pages/Book/EditBookPage";
+import PrivateRoute from "./PrivateRoute";
 
 const routes = createBrowserRouter([
   {
@@ -29,19 +30,28 @@ const routes = createBrowserRouter([
       },
       {
         path: "signup",
-        element: <SignUp/>
+        element: <SignUp />,
       },
       {
         path: "add-new-book",
-        element: <AddNewBook/>
+        element: (
+          <PrivateRoute>
+            {" "}
+            <AddNewBook />{" "}
+          </PrivateRoute>
+        ),
       },
       {
         path: "edit-book/:id",
-        element: <EditBookPage/>
+        element: (
+          <PrivateRoute>
+            <EditBookPage />
+          </PrivateRoute>
+        ),
       },
       {
         path: "login",
-        element: <Login/>,
+        element: <Login />,
       },
       {
         path: "/book-details/:id",

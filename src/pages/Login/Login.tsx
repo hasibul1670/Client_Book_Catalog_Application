@@ -18,7 +18,6 @@ import { useAppDispatch, useAppSelector } from "../../redux/hook";
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const from = location.state?.from?.pathname || "/";
 
   const {
@@ -36,11 +35,10 @@ const Login = () => {
       const result = await dispatch(
         loginUser({ email: data.email, password: data.password })
       );
-   
 
       if (result.payload?.statusCode) {
         toast.success("Successfully Logged In !! ");
-            reset();
+        reset();
       } else {
         toast.error("Incorrect Password");
       }
@@ -50,7 +48,7 @@ const Login = () => {
   };
   useEffect(() => {
     if (userEmail && !loading) {
-      navigate("/");
+      navigate(from, { replace: true });
     }
   }, [loading, userEmail]);
 

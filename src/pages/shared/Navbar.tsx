@@ -205,7 +205,7 @@ const NavBar = () => {
             </div>
           </div>
         </>
-        {firstName && <p>{firstName}</p>}
+        {firstName && <p className="font-bold mr-3 text-cyan-400">{firstName}</p>}
         {accessToken ? (
           <button onClick={handleLogOut} className="btn btn-sm btn-outline ">
             <span className="text-white text-xs">logout</span>

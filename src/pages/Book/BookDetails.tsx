@@ -15,6 +15,7 @@ import { IBook } from "../../types/bookTypes";
 import Footer from "../shared/Footer";
 import NotFound from "../shared/NotFound";
 import Loading from "../shared/Loading";
+import { addTowish } from "../../redux/features/wishlist/wishSlice";
 
 const defaultBookRating = 4.5;
 const BookDetails = () => {
@@ -64,6 +65,13 @@ const BookDetails = () => {
   }
   const bookData = book?.data[0];
   const reviewData = bookData?.review;
+
+ 
+  
+  const handleAddWishListBook = (book: IBook) => {
+    dispatch(addTowish(book));
+    toast.success("Book is Added to Wishlist Successfully!");
+  };
   return (
     <div className="">
       <div className="hero px-10 py-24  min-h-screen bg-base-200">
@@ -105,9 +113,13 @@ const BookDetails = () => {
 
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
-            <button className="btn btn-outline btn-sm  ">
-              Add to WishList
-            </button>
+       
+            <button
+          onClick={() => handleAddWishListBook(book)}
+          className="btn btn-outline btn-defult btn-sm mx-2  "
+        >
+          Add to WishList
+        </button>
 
             {loggedInEmail === bookData?.addedBy && (
               <Link to={`/edit-book/${id}`}>

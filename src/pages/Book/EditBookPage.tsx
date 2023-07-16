@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import defaultBook from "../../assets/defaultbook.jpg";
 import {
   usePostReviewMutation,
@@ -15,7 +15,7 @@ import { IBook } from "../../types/bookTypes";
 import Footer from "../shared/Footer";
 
 const defaultBookRating = 4.5;
-const BookDetails = () => {
+const EditBookPage = () => {
   const dispatch = useAppDispatch();
   const handleAddBook = (book: IBook) => {
     dispatch(addToCart(book));
@@ -65,6 +65,7 @@ const BookDetails = () => {
             src={bookData?.bookImage || defaultBook}
             className="max-w-sm rounded-lg shadow-2xl"
           />
+          
           <div>
             <p className="text-xs font-bold">{id}</p>
             <h1 className="text-xl text-cyan-400 font-bold">
@@ -98,24 +99,26 @@ const BookDetails = () => {
 
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
-            <button className="btn btn-outline btn-sm  ">
-              Add to WishList
-            </button>
 
             {loggedInEmail === bookData?.addedBy && (
-              <Link to={`/edit-book/${id}`}>
-                <button className="btn ml-2 btn-outline btn-sm">
-                  Edit this Book
-                </button>
-              </Link>
+              <>
+                    <button
+                onClick={() => handleAddBook(bookData)}
+                className="btn ml-2 btn-outline btn-sm"
+              >
+                Edit this Book
+              </button>
+              <button
+                onClick={() => handleAddBook(bookData)}
+                className="btn ml-2 btn-outline btn-sm"
+              >
+                Delete this Book
+              </button>
+              </>
+        
             )}
 
-            <button
-              onClick={() => handleAddBook(bookData)}
-              className="btn btn-outline btn-primary btn-sm mx-2  "
-            >
-              Add to Cart
-            </button>
+     
 
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
@@ -191,4 +194,4 @@ const BookDetails = () => {
   );
 };
 
-export default BookDetails;
+export default EditBookPage;

@@ -14,12 +14,14 @@ const AddNewBook = () => {
   } = useForm();
 
   const [postBook] = usePostBookMutation();
+  const addedBy = localStorage.getItem("email");
 
   const onSubmit: SubmitHandler<FieldValues> = async (data, e) => {
     e!.preventDefault();
     const options = {
       data: {
         title: data.title,
+        addedBy: addedBy,
         author: data.author,
         genre: data.genre,
         publicationDate: data.publishedDate,
@@ -39,7 +41,7 @@ const AddNewBook = () => {
       if (status === 409) {
         toast.error("This Book is Already Exist");
       }
-    } catch (error:any) {
+    } catch (error: any) {
       if (error.status === 409) {
         toast.error("This Book is Already Exist");
       }

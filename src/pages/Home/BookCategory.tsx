@@ -3,12 +3,19 @@ import BookCard from "../../components/BookCard";
 import SectionTitle from "../../components/SectionTitle";
 import { useGetBooksQuery } from "../../redux/features/book/bookApi";
 import { IBook } from "../../types/bookTypes";
+import Loading from "../shared/Loading";
 
 const BooksCategory = () => {
-  const { data, isLoading, error } = useGetBooksQuery(undefined);
+  const { data, isLoading, error } = useGetBooksQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    pollingInterval: 40000,
+  });
 
   const booksData = data?.data?.data;
 
+  if (isLoading) {
+    return <Loading/>;
+  }
   return (
     <div className="mb-5 ">
       <SectionTitle

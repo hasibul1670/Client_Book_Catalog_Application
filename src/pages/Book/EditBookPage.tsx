@@ -1,10 +1,12 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import defaultBook from "../../assets/defaultbook.jpg";
 import {
+  useDeleteBookMutation,
   useEditBookMutation,
   useSingleBookQuery,
 } from "../../redux/features/book/bookApi";
@@ -14,14 +16,11 @@ import { IBook } from "../../types/bookTypes";
 
 import { ReactNode, useEffect } from "react";
 import Footer from "../shared/Footer";
+import Loading from "../shared/Loading";
+import NotFound from "../shared/NotFound";
+import Swal from "sweetalert2";
 
-const defaultBookRating = 4.5;
 const EditBookPage = () => {
-  const dispatch = useAppDispatch();
-  const handleAddBook = (book: IBook) => {
-    dispatch(addToCart(book));
-    toast.success("Product Added to Cart Successfully!");
-  };
 
   const {
     register,
@@ -32,12 +31,15 @@ const EditBookPage = () => {
   } = useForm();
 
   const { id } = useParams();
-  const { data: book } = useSingleBookQuery(id, {
+  const navigate = useNavigate();
+
+  const { data: book, isLoading } = useSingleBookQuery(id, {
     refetchOnMountOrArgChange: true,
     pollingInterval: 9000,
   });
 
   const bookData = book?.data[0];
+
   useEffect(() => {
     if (bookData) {
       setValue("title", bookData.title);
@@ -51,6 +53,7 @@ const EditBookPage = () => {
   }, [bookData, setValue]);
 
   const [editBook] = useEditBookMutation();
+  const [deleteBook] = useDeleteBookMutation();
   const editedBy = localStorage.getItem("email");
 
   const onSubmit: SubmitHandler<FieldValues> = async (data, e) => {
@@ -70,22 +73,44 @@ const EditBookPage = () => {
     };
     const result = await editBook(options).unwrap();
     const { statusCode } = result;
-    console.log("Hellosssssssssssss", result);
+
     if (statusCode === 200) {
       toast.success("Book Edited SuccessFully");
+      navigate(`/book-details/${id}`)
     } else {
       toast.error("Internal Server Error!! please try again Later");
     }
     reset();
   };
 
-  const handleDeleteBook = () => {
-    console.log("Hello bokk is deleted");
+  const handleDeleteBook = async (id: any) => {
+  
+    Swal.fire({
+      title: 'Do you want to delete this Book ?',
+      showDenyButton: false,
+      showCancelButton: true,
+      confirmButtonText: 'Delete Book',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        Swal.fire('Deleted!', '', 'success');
+        result = await deleteBook(id).unwrap();
+        navigate("/books")
+      }
+    });
+
   };
+  
   const loggedInEmail = localStorage.getItem("email");
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (book?.data[0] === undefined) {
+    return <NotFound />;
+  }
+
   return (
     <div className="">
-      <div className="hero px-10 py-24   min-h-screen">
+      <div className="hero px-10 py-1   min-h-screen">
         <div className="hero-content   w-full  flex-col lg:flex-row">
           <img
             src={bookData?.bookImage || defaultBook}
@@ -232,8 +257,8 @@ const EditBookPage = () => {
             {loggedInEmail === bookData?.addedBy && (
               <>
                 <button
-                  onClick={() => handleDeleteBook(bookData)}
-                  className="btn ml-2  btn-outline btn-sm"
+                  onClick={() => handleDeleteBook(id)}
+                  className="btn ml-2   btn-outline btn-sm"
                 >
                   Delete this Book
                 </button>
@@ -243,7 +268,8 @@ const EditBookPage = () => {
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
             <small className=" text-xs text-blue-700 font-semibold ">
-              Last Edited By : {bookData?.addedBy} at <span className="text-red-500">{bookData?.lastUpdateTime}</span> 
+              Last Edited By : {bookData?.addedBy} at{" "}
+              <span className="text-red-500">{bookData?.lastUpdateTime}</span>
             </small>
             <br />
             <small className=" text-xs text-blue-700 font-semibold ">

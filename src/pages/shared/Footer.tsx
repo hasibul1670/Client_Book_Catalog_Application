@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <div>
-      <footer className="footer footer-center p-10 bg-gray-600 text-base-content rounded">
+    <div className="z-auto " >
+      <footer className="footer footer-center  p-10 bg-gray-600 text-base-content rounded">
         <div className="grid grid-flow-col gap-4 text-white">
           <Link to="/about-us" className="link link-hover ">
             AboutUs

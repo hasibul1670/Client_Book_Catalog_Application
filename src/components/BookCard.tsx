@@ -2,9 +2,10 @@
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import defaultBook from "../assets/defaultbook.jpg";
-import { addToCart } from "../redux/features/cart/cartSlice";
+
 import { useAppDispatch } from "../redux/hook";
 import { IBook } from "../types/bookTypes";
+import { addTowish } from "../redux/features/wishlist/wishSlice";
 
 interface IProps {
   book: IBook;
@@ -26,8 +27,8 @@ const BookCard = ({ book }: IProps) => {
   } = book;
 
   const handleAddBook = (book: IBook) => {
-    dispatch(addToCart(book));
-    toast.success("Product Added to Cart Successfully!");
+    dispatch(addTowish(book));
+    toast.success("Book is Added to Wishlist Successfully!");
   };
   return (
     <div className="card w-64  border-solid border-2 border-sky-500 shadow-xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300">

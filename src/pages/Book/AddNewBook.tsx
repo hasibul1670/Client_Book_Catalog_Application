@@ -3,6 +3,8 @@ import Lottie from "lottie-react";
 import { ReactNode } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import signup from "../../assets/animation/addNewBook.json";
 import { usePostBookMutation } from "../../redux/features/book/bookApi";
 const AddNewBook = () => {
@@ -15,7 +17,7 @@ const AddNewBook = () => {
 
   const [postBook] = usePostBookMutation();
   const addedBy = localStorage.getItem("email");
-
+  const navigate = useNavigate();
   const onSubmit: SubmitHandler<FieldValues> = async (data, e) => {
     e!.preventDefault();
     const options = {
@@ -36,7 +38,16 @@ const AddNewBook = () => {
       const { statusCode, status } = result;
       console.log("Hello", result);
       if (statusCode === 200) {
-        toast.success("Review Added SuccessFully");
+        toast.success("Book Added SuccessFully");
+        Swal.fire({
+          position: "center",
+          icon: "success",
+          title: "Book Added SuccessFully",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        navigate("/books");
+        reset();
       }
       if (status === 409) {
         toast.error("This Book is Already Exist");
@@ -103,18 +114,28 @@ const AddNewBook = () => {
                   )}
                 </div>
 
+        
                 {/* Genre */}
                 <div className="form-control">
                   <label className="label">
                     <span className="label-text">Genre:</span>
                   </label>
-                  <input
+                  <select
                     {...register("genre", { required: true })}
                     name="genre"
-                    placeholder="Genre"
                     className="input input-bordered"
                     aria-invalid={errors.genre ? "true" : "false"}
-                  />
+                  >
+                   
+                    <option value="nonfiction">Non-fiction</option>
+                    <option value="humor">Humor</option>
+                    <option value="memoir">Memoir</option>
+                    <option value="fantasy">Fantasy</option>
+                    <option value="horror">Horror</option>
+                    <option value="nystery">Mystery & Thriller</option>
+                    <option value="historical">Historical Fiction</option>
+                    <option value="science">Science-Fiction</option>
+                  </select>
                   {errors.genre?.type === "required" && (
                     <small className="text-red-600">Genre is required!</small>
                   )}

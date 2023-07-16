@@ -10,11 +10,13 @@ export type IBook = {
   price: number;
   bookImage?: string;
   rating?: number;
+  finishedReading?: boolean;
 };
 
 export interface Book {
   id: number;
   title: string;
   author: string;
+  finishedReading?: boolean;
   status: "wishlist" | "currentlyReading" | "planToRead" | "finishedReading";
 }

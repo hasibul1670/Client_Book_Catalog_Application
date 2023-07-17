@@ -8,6 +8,7 @@ import defaultBook from "../../assets/defaultbook.jpg";
 import {
   useDeleteWishMutation,
   useGetWishListQuery,
+  useUpdateWishListMutation,
 } from "../../redux/features/wishlist/wishListApi";
 import { IBook } from "../../types/bookTypes";
 
@@ -15,13 +16,14 @@ const WishList = () => {
   const email = localStorage.getItem("email");
   const { data } = useGetWishListQuery(email, {
     refetchOnMountOrArgChange: true,
-    pollingInterval: 10000,
+    pollingInterval: 5000,
   });
 
   const actualData = data?.data[0]?.wishList;
   const [deleteWish] = useDeleteWishMutation();
+  const [updateWishList] = useUpdateWishListMutation();
 
- const handleRemoveBookFromWish = async (book: IBook) => {
+  const handleRemoveBookFromWish = async (book: IBook) => {
     const options = {
       email: email,
       wishlistItemId: book._id,
@@ -30,13 +32,25 @@ const WishList = () => {
     toast.success("Book is removed from the Wishlist!!");
   };
 
-  const handleMarkAsFinished = (book: IBook) => {
-    toast.success("Book marked as Finished!!");
-  };
+  const handleMarkBookStatus = async (book: IBook, status: string) => {
+ 
+    const updatedStatus = !book.finishedReading; 
+  
+    const options = {
+      email: email,
+      wishlistItemId: book._id,
+      finishedReading: updatedStatus,
+    };
+  
 
-  const handleMarkAsUnfinished = (book: IBook) => {
-    toast.success("Book marked as UnFinished!!");
+    const result = await updateWishList(options).unwrap();
+    if (result.success) {
+      toast.success("Book status updated successfully!");
+    } else {
+      toast.error("Failed to update book status.");
+    }
   };
+  
 
   return (
     <div className="p-2 shadow-xl py-32">
@@ -65,14 +79,14 @@ const WishList = () => {
               <div className="flex justify-between items-center mt-4">
                 {book.finishedReading ? (
                   <button
-                    onClick={() => handleMarkAsUnfinished(book)}
+                    onClick={() => handleMarkBookStatus(book, "unfinished")}
                     className="text-red-500 btn btn-sm p-2"
                   >
                     Continue Reading
                   </button>
                 ) : (
                   <button
-                    onClick={() => handleMarkAsFinished(book)}
+                    onClick={() => handleMarkBookStatus(book, "finished")}
                     className="text-green-500 btn btn-sm "
                   >
                     Finished Reading

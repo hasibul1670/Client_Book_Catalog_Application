@@ -73,11 +73,11 @@ const BookDetails = () => {
       const options = {
         data: { wishList: bookData, email: email },
       };
-       console.log('Hello',options);
+  
       const result = await createWishList(options).unwrap();
       toast.success("Book is Added to Wishlist Successfully!");
     } catch (error) {
-      console.error("Error occurred:", error);
+  
       toast.error("WishList is Already Exists");
     }
   };

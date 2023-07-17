@@ -1,23 +1,37 @@
-
-import { ReactNode } from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useAppSelector } from '../redux/hook';
-import Loading from '../pages/shared/Loading';
+import { ReactNode } from "react";
+import { Navigate, useLocation } from "react-router";
+import Loading from "../pages/shared/Loading";
+import { useAppSelector } from "../redux/hook";
 
 interface IProps {
   children: ReactNode;
 }
 
-export default function PrivateRoute({ children }: IProps) {
+const PrivateRoute = ({ children }: IProps) => {
   const { userEmail, isLoading } = useAppSelector((state) => state.auth);
-  const { pathname } = useLocation();
+  const location = useLocation();
 
-  if (isLoading) {
-    return <p><Loading/></p>;
-  }
-  if (!userEmail && !isLoading) {
-    return <Navigate to="/login" state={{ path: pathname }} />;
-  }
+  
 
-  return children;
-}
+
+  if (userEmail) {
+    return children;
+  }
+  return <Navigate to="/login" state={{ from: location }} replace></Navigate>;
+};
+
+export default PrivateRoute;
+
+// export default function PrivateRoute({ children }: IProps) {
+//   const { userEmail, isLoading } = useAppSelector((state) => state.auth);
+//   const { pathname } = useLocation();
+
+//   if (isLoading) {
+//     return <p><Loading/></p>;
+//   }
+//   if (!userEmail) {
+//     return <Navigate to="/login" state={{ path: pathname }} />;
+//   }
+
+//   return children;
+// }

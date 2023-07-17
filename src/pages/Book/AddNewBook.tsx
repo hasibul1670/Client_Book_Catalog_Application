@@ -36,7 +36,6 @@ const AddNewBook = () => {
     try {
       const result = await postBook(options).unwrap();
       const { statusCode, status } = result;
-      console.log("Hello", result);
       if (statusCode === 200) {
         toast.success("Book Added SuccessFully");
         Swal.fire({
@@ -58,7 +57,7 @@ const AddNewBook = () => {
       }
     }
 
-    // reset();
+    reset();
   };
 
   return (

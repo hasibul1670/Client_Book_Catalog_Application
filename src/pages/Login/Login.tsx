@@ -12,7 +12,11 @@ import Lottie from "lottie-react";
 import { ReactNode } from "react";
 import { toast } from "react-hot-toast";
 import login from "../../assets/animation/38435-register.json";
-import { loginUser } from "../../redux/features/auth/authSlice";
+import {
+  loginUser,
+  setLoading,
+  setUserEmail,
+} from "../../redux/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "../../redux/hook";
 
 const Login = () => {
@@ -51,6 +55,8 @@ const Login = () => {
       navigate(from, { replace: true });
     }
   }, [loading, userEmail]);
+
+
 
   return (
     <div className="main-container  p-4 py-20 md:hero min-h-screen   justify-items-center">

@@ -5,7 +5,7 @@ import { AuthState } from "./authTypes";
 const initialState: AuthState = {
   loggedIn: false,
   loading: false,
-  isLoading: false,
+  isLoading: true,
   isSuccess: false,
   error: null,
   firstName: localStorage.getItem("firstName") || null,
@@ -17,7 +17,6 @@ export const loginUser = createAsyncThunk(
   "login",
   async ({ email, password }: { email: string; password: string }) => {
     try {
-      // Make the API call here (replace with your actual implementation)
       const response = await fetch(
         "https://server-book-catalog-application.vercel.app/api/v1/auth/login",
         {
@@ -86,6 +85,10 @@ const authSlice = createSlice({
     ) => {
       state.userEmail = action.payload?.data.email;
     },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    },
+
     setAccessToken: (
       state,
       action: PayloadAction<{ data: { accessToken: string | null } }>
@@ -135,6 +138,7 @@ const authSlice = createSlice({
   },
 });
 
-export const { setAccessToken, setUserEmail, setFirstName } = authSlice.actions;
+export const { setAccessToken, setUserEmail, setLoading, setFirstName } =
+  authSlice.actions;
 
 export default authSlice.reducer;

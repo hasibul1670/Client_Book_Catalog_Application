@@ -2,7 +2,7 @@
 import Lottie from "lottie-react";
 import { useEffect } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import signup from "../../assets/animation/118046-lf20-oahmox5rjson.json";
 import { createUser } from "../../redux/features/auth/authSlice";
@@ -17,9 +17,8 @@ const SignUp = () => {
   } = useForm();
 
   const dispatch = useAppDispatch();
-  const { isSuccess, error, isLoading } = useAppSelector((state) => state.auth);
-
-  console.log(isSuccess,error, isLoading);
+  const navigate = useNavigate();
+  const { isSuccess, error } = useAppSelector((state) => state.auth);
   useEffect(() => {
     if (isSuccess && !error) {
       Swal.fire({
@@ -30,6 +29,7 @@ const SignUp = () => {
         timer: 2500,
       });
       reset();
+      navigate("/login");
     }
     if (error) {
       Swal.fire({

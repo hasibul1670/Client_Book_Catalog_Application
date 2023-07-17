@@ -6,7 +6,6 @@ type Iwish = {
   book: IBook[];
 }
 const storedwish = localStorage.getItem("wishlist");
-console.log('Hello',storedwish);
 const initialwishState: Iwish =
 
 storedwish ? JSON.parse(storedwish) : { book: [] };

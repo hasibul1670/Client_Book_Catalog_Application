@@ -26,11 +26,7 @@ const routes = createBrowserRouter([
       },
       {
         path: "/wishlist",
-        element: (
-          <PrivateRoute>
-            <WishlistPage />
-          </PrivateRoute>
-        ),
+        element: <WishlistPage />,
       },
       {
         path: "signup",

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { api } from "../../api/apiSlice";
 
 const wishListApi = api.injectEndpoints({
@@ -14,8 +15,18 @@ const wishListApi = api.injectEndpoints({
       }),
     }),
 
-   
+    deleteWish: builder.mutation({
+      query: ({ email, wishlistItemId }) => ({
+        url: "/wishlists",
+        method: "DELETE",
+        body: { email: email, wishlistItemId: wishlistItemId },
+      }),
+    }),
   }),
 });
 
-export const { useCreateWishListMutation,useGetWishListQuery } = wishListApi;
+export const {
+  useCreateWishListMutation,
+  useDeleteWishMutation,
+  useGetWishListQuery,
+} = wishListApi;

@@ -12,14 +12,16 @@ import { addToCart } from "../../redux/features/cart/cartSlice";
 import { useAppDispatch } from "../../redux/hook";
 import { IBook } from "../../types/bookTypes";
 
+import { useCreateWishListMutation } from "../../redux/features/wishlist/wishListApi";
 import Footer from "../shared/Footer";
-import NotFound from "../shared/NotFound";
 import Loading from "../shared/Loading";
-import { addTowish } from "../../redux/features/wishlist/wishSlice";
+import NotFound from "../shared/NotFound";
 
 const defaultBookRating = 4.5;
 const BookDetails = () => {
   const dispatch = useAppDispatch();
+  const email = localStorage.getItem("email");
+  const [createWishList] = useCreateWishListMutation();
   const handleAddBook = (book: IBook) => {
     dispatch(addToCart(book));
     toast.success("Product Added to Cart Successfully!");
@@ -53,12 +55,12 @@ const BookDetails = () => {
   };
 
   const loggedInEmail = localStorage.getItem("email");
-  const { data: book ,isLoading} = useSingleBookQuery(id, {
+  const { data: book, isLoading } = useSingleBookQuery(id, {
     refetchOnMountOrArgChange: true,
     pollingInterval: 9000,
   });
   if (isLoading) {
-    return <Loading/>; 
+    return <Loading />;
   }
   if (book?.data[0] === undefined) {
     return <NotFound />;
@@ -66,12 +68,20 @@ const BookDetails = () => {
   const bookData = book?.data[0];
   const reviewData = bookData?.review;
 
- 
-  
-  const handleAddWishListBook = (book: IBook) => {
-    dispatch(addTowish(book));
-    toast.success("Book is Added to Wishlist Successfully!");
+  const handleWishList = async (book: IBook) => {
+    try {
+      const options = {
+        data: { wishList: bookData, email: email },
+      };
+       console.log('Hello',options);
+      const result = await createWishList(options).unwrap();
+      toast.success("Book is Added to Wishlist Successfully!");
+    } catch (error) {
+      console.error("Error occurred:", error);
+      toast.error("WishList is Already Exists");
+    }
   };
+
   return (
     <div className="">
       <div className="hero px-10 py-24  min-h-screen bg-base-200">
@@ -113,13 +123,23 @@ const BookDetails = () => {
 
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
-       
-            <button
-          onClick={() => handleAddWishListBook(book)}
-          className="btn btn-outline btn-defult btn-sm mx-2  "
-        >
-          Add to WishList
-        </button>
+            {loggedInEmail && (
+              <>
+                <button
+                  onClick={() => handleWishList(book)}
+                  className="btn btn-outline btn-defult btn-sm mx-2  "
+                >
+                  Add to WishList
+                </button>
+
+                <button
+                  onClick={() => handleAddBook(bookData)}
+                  className="btn btn-outline btn-primary btn-sm mx-2  "
+                >
+                  Add to Cart
+                </button>
+              </>
+            )}
 
             {loggedInEmail === bookData?.addedBy && (
               <Link to={`/edit-book/${id}`}>
@@ -128,13 +148,6 @@ const BookDetails = () => {
                 </button>
               </Link>
             )}
-
-            <button
-              onClick={() => handleAddBook(bookData)}
-              className="btn btn-outline btn-primary btn-sm mx-2  "
-            >
-              Add to Cart
-            </button>
 
             <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
 
@@ -145,66 +158,69 @@ const BookDetails = () => {
         </div>
       </div>
 
-      <div className="flex mb-5  ">
-        <div className="w-25 ">
-          {reviewData &&
-            reviewData
-              .slice()
-              .reverse()
-              .map((item: any) => (
-                <div className="card w-96 h-32 mb-5 bg-base-300 shadow-xl">
-                  <div className="card-body">
-                    <h2 className="text-cyan-500 font-bold">
-                      <small className="text-xs">Reviewed By:</small>
-                      {item?.writtenBy}
-                    </h2>
-                    <p className="text-sm text-gray-900">{item.title}</p>
-                    <p className="text-xs font-bold text-red-800">
-                      {item.date}
-                    </p>
+      {loggedInEmail && (
+        <div className="flex mb-5  ">
+          <div className="w-25 ">
+            {reviewData &&
+              reviewData
+                .slice()
+                .reverse()
+                .map((item: any) => (
+                  <div className="card w-96 h-32 mb-5 bg-base-300 shadow-xl">
+                    <div className="card-body">
+                      <h2 className="text-cyan-500 font-bold">
+                        <small className="text-xs">Reviewed By:</small>
+                        {item?.writtenBy}
+                      </h2>
+                      <p className="text-sm text-gray-900">{item.title}</p>
+                      <p className="text-xs font-bold text-red-800">
+                        {item.date}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+          </div>
+
+          <div className="w-full flex  items-start  justify-end">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="md:hero font-bold mt-5 ml-16"
+            >
+              <div className="card flex-shrink-0 w-full  max-w-screen-sm shadow-2xl ">
+                <div className="card-body">
+                  {/* Book Review */}
+
+                  <div className="form-control">
+                    <label className="label">
+                      <span className="label-text">
+                        Add Review For that Book
+                      </span>
+                    </label>
+                    <textarea
+                      {...register("title", { required: true })}
+                      name="title"
+                      placeholder="Write Review here....."
+                      className="input input-bordered h-32"
+                      aria-invalid={errors.title ? "true" : "false"}
+                    />
+                    {errors.title?.type === "required" && (
+                      <small className="text-red-600">
+                        Book Review is required!
+                      </small>
+                    )}
+                  </div>
+
+                  <div className="form-control mt-6">
+                    <button className="btn font-bold btn-primary">
+                      Add Review
+                    </button>
                   </div>
                 </div>
-              ))}
-        </div>
-
-        <div className="w-full flex  items-start  justify-end">
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="md:hero font-bold mt-5 ml-16"
-          >
-            <div className="card flex-shrink-0 w-full  max-w-screen-sm shadow-2xl ">
-              <div className="card-body">
-                {/* Book Review */}
-
-                <div className="form-control">
-                  <label className="label">
-                    <span className="label-text">Add Review For that Book</span>
-                  </label>
-                  <textarea
-                    {...register("title", { required: true })}
-                    name="title"
-                    placeholder="Write Review here....."
-                    className="input input-bordered h-32"
-                    aria-invalid={errors.title ? "true" : "false"}
-                  />
-                  {errors.title?.type === "required" && (
-                    <small className="text-red-600">
-                      Book Review is required!
-                    </small>
-                  )}
-                </div>
-
-                <div className="form-control mt-6">
-                  <button className="btn font-bold btn-primary">
-                    Add Review
-                  </button>
-                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
-
+      )}
       <Footer />
     </div>
   );

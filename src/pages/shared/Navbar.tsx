@@ -65,27 +65,13 @@ const NavBar = () => {
   const { accessToken, firstName } = useAppSelector((state) => state.auth);
 
   const dispatch = useAppDispatch();
-  const [createWishList] = useCreateWishListMutation();
-
-  const wishListData = localStorage.getItem("wishlist");
-  const email = localStorage.getItem("email");
-  const wishList = wishListData ? JSON.parse(wishListData) : [];
-
-  const handleWishList = async () => {
-    const options = {
-      data: { wishList: wishList?.book, email: email || "" },
-    };
-    await createWishList(options).unwrap();
-  };
 
   const handleLogOut = () => {
-    handleWishList();
+
     localStorage.removeItem("token");
     localStorage.removeItem("email");
     localStorage.removeItem("firstName");
     localStorage.removeItem("cart");
-    localStorage.removeItem("wish");
-    localStorage.removeItem("wishlist");
     dispatch(setAccessToken({ data: { accessToken: null } }));
     dispatch(setFirstName(null));
     dispatch(setUserEmail({ data: { email: null } }));

@@ -1,18 +1,20 @@
 /* eslint-disable no-unused-vars */
-import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
 import defaultBook from "../assets/defaultbook.jpg";
 
-import { useAppDispatch } from "../redux/hook";
+import { toast } from "react-hot-toast";
+import { useCreateWishListMutation } from "../redux/features/wishlist/wishListApi";
 import { IBook } from "../types/bookTypes";
-import { addTowish } from "../redux/features/wishlist/wishSlice";
 
 interface IProps {
   book: IBook;
 }
 
 const BookCard = ({ book }: IProps) => {
-  const dispatch = useAppDispatch();
+  const email = localStorage.getItem("email");
+  const loggedInEmail = localStorage.getItem("email");
+  const [createWishList] = useCreateWishListMutation();
+
   const {
     id,
     title,
@@ -26,10 +28,19 @@ const BookCard = ({ book }: IProps) => {
     year,
   } = book;
 
-  const handleAddBook = (book: IBook) => {
-    dispatch(addTowish(book));
-    toast.success("Book is Added to Wishlist Successfully!");
+  const handleWishList = async (book: IBook) => {
+    try {
+      const options = {
+        data: { wishList: book, email: email},
+      };
+      const result = await createWishList(options).unwrap();
+      toast.success("Book is Added to Wishlist Successfully!");
+    } catch (error) {
+      console.error("Error occurred:", error);
+      toast.error("WishList is Already Exists");
+    }
   };
+
   return (
     <div className="card w-64  border-solid border-2 border-sky-500 shadow-xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300">
       <figure className="px-10 pt-2">
@@ -46,13 +57,14 @@ const BookCard = ({ book }: IProps) => {
             Show Details
           </button>
         </Link>
-     
-        <button
-          onClick={() => handleAddBook(book)}
-          className="btn btn-outline btn-defult btn-sm mx-2  "
-        >
-          Add to WishList
-        </button>
+        {loggedInEmail && (
+          <button
+            onClick={() => handleWishList(book)}
+            className="btn btn-outline btn-defult btn-sm mx-2  "
+          >
+            Add to WishList
+          </button>
+        )}
       </div>
     </div>
   );
